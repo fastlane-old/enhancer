@@ -44,7 +44,7 @@ Alternatively, add `opt_out_usage` to your `Fastfile`.
 
 ### Data
 
-All data is publicly available: [https://enhancer.fastlane.tools/](https://enhancer.fastlane.tools/).
+All data is publicly available: [https://fastlane-enhancer.herokuapp.com/](https://fastlane-enhancer.herokuapp.com/).
 
 # License
 This project is licensed under the terms of the MIT license. See the LICENSE file.
