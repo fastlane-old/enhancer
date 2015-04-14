@@ -23,7 +23,7 @@ enhancer
 [![Twitter: @KauseFx](https://img.shields.io/badge/contact-@KrauseFx-blue.svg?style=flat)](https://twitter.com/KrauseFx)
 [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/fastlane/enhancer/blob/master/LICENSE)
 
-`enhancer` runs on [Heroku](https://www.heroku.com/). [fastlane](https://fastlane.tools) tracks the number of failed actions to monitor the actions that don't work as reliable as expected.
+[fastlane](https://fastlane.tools) tracks the number of errors for each action to detect integration issues.
 
 ### Privacy
 
