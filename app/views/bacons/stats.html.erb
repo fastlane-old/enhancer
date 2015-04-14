@@ -1,0 +1,30 @@
+<style type="text/css">
+  * { 
+       font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+     font-weight: 300;
+  }
+  th { font-weight: bold; }
+
+  .red { background-color: red; }
+  .orange { background-color: orange; }
+  .yellow { background-color: yellow; }
+  .green { background-color: green; color: white; }
+</style>
+
+<h1>Enhancer</h1>
+
+<p>This is the number of times an action was run and compared to the number of errors this action caused. More information on <a href="https://github.com/fastlane/enhancer" target="_blank">GitHub</a></p>
+
+<%= table_for @sums, html: {
+    tr: {
+      class: lambda do |entry| 
+        result = nil
+        @levels.reverse.each do |value|
+          result = value[:color] if entry[:ratio] >= value[:value]
+        end
+        result
+      end
+    } 
+  } do -%>
+  <% columns :action, :ratio, :launches, :errors %>
+<% end %>

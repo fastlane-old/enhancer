@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   resources :bacons
-  resources :entries
 
-  root to: 'entries#stats'
+  root to: 'bacons#stats'
   get 'did_launch' => 'bacons#did_launch'
 end

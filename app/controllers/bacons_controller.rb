@@ -30,6 +30,25 @@ class BaconsController < ApplicationController
   end
 
   def stats
+    actions = Bacon.group(:action_name).collect { |b| b.action_name }
+    @sums = []
+    actions.each do |action|
+      entry = {
+        action: action,
+        launches: Bacon.where(action_name: action).sum(:launches),
+        errors: Bacon.where(action_name: action).sum(:number_errors)
+      }
+      entry[:ratio] = entry[:errors].to_f / entry[:launches].to_f
+      @sums << entry
+    end
 
+    @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
+
+    @levels = [
+      { value: 0.5, color: 'red' },
+      { value: 0.3, color: 'orange' },
+      { value: 0.1, color: 'yellow' },
+      { value: 0.0, color: 'green' }
+    ]
   end
 end

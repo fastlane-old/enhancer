@@ -25,7 +25,7 @@ enhancer
 
 `enhancer` runs run on [Heroku](https://www.heroku.com/). The [fastlane](https://fastlane.tools) track the number of failed actions to monitor the actions that don't work as reliable as expected.
 
-You can see the generated stats on [https://enhancer.fastlane.tools/](https://enhancer.fastlane.tools/) and the graphs on [https://enhancer.fastlane.tools/graphs](https://enhancer.fastlane.tools/graphs).
+You can see the generated stats on [https://enhancer.fastlane.tools/](https://enhancer.fastlane.tools/).
 
 # License
 This project is licensed under the terms of the MIT license. See the LICENSE file.
