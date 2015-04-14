@@ -30,7 +30,7 @@ class BaconsController < ApplicationController
   end
 
   def stats
-    actions = Bacon.group(:action_name).collect { |b| b.action_name }
+    actions = Bacon.all.collect { |b| b.action_name }.uniq
     @sums = []
     actions.each do |action|
       entry = {
