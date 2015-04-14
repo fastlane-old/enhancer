@@ -1,0 +1,2 @@
+module BaconsHelper
+end
