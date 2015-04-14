@@ -38,7 +38,7 @@ class BaconsController < ApplicationController
         launches: Bacon.where(action_name: action).sum(:launches),
         errors: Bacon.where(action_name: action).sum(:number_errors)
       }
-      entry[:ratio] = entry[:errors].to_f / entry[:launches].to_f
+      entry[:ratio] = (entry[:errors].to_f / entry[:launches].to_f).round(3)
       @sums << entry
     end
 
