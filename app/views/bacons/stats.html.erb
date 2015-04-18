@@ -15,6 +15,24 @@
 
 <p>This is the number of times an action was run and compared to the number of errors this action caused. More information on <a href="https://github.com/fastlane/enhancer" target="_blank">GitHub</a></p>
 
+By # Launches
+<%= table_for @by_launches, html: {
+    tr: {
+      class: lambda do |entry| 
+        result = nil
+        @levels.reverse.each do |value|
+          result = value[:color] if entry[:ratio] >= value[:value]
+        end
+        result
+      end
+    } 
+  } do -%>
+  <% columns :action, :ratio, :launches, :errors %>
+<% end %>
+
+<hr />
+
+By Ratio
 <%= table_for @sums, html: {
     tr: {
       class: lambda do |entry| 

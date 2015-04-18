@@ -44,6 +44,8 @@ class BaconsController < ApplicationController
 
     @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
 
+    @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
+
     @levels = [
       { value: 0.5, color: 'red' },
       { value: 0.3, color: 'orange' },
