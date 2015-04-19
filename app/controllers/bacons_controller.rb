@@ -42,7 +42,7 @@ class BaconsController < ApplicationController
       @sums << entry
     end
 
-    @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
+    @sums.sort! { |a, b| b[:ratio] * b[:launches] <=> a[:ratio] * a[:launches] }
 
     @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
 
