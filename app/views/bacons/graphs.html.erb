@@ -1,0 +1,58 @@
+<h3>Graphs about the number of launches of each <a href="https://fastlane.tools" target="_blank">fastlane</a> tool<h3>
+<h4><a href="https://github.com/fastlane/refresher" target="_blank">View the source code on GitHub</a></h4>
+<h3>Cumulative launches</h3>
+<canvas id="myChart2"></canvas>
+<h3>Number of launches</h3>
+<canvas id="myChart"></canvas>
+
+
+<script type="text/javascript">
+  var ctx = $("#myChart").get(0).getContext("2d");
+  var myNewChart = new Chart(ctx);
+
+  var data = {
+    labels: <%= raw(@days) %>,
+    datasets: [
+      <% @data.each do |key, current| %>
+        {
+          <% current.each do |key, value| %>
+            <% pre = (key != :data ? '"' : '') %>
+            <%= key %>: <%= raw(pre + value.to_s + pre) %>,
+          <% end %>
+        },
+      <% end %>
+    ]
+  };
+
+  var myLineChart = new Chart(ctx).Line(data, {
+    scaleBeginAtZero: true,
+    responsive: true,
+    multiTooltipTemplate: "<\%= datasetLabel %> - <\%= value %>"
+  });
+
+  ctx = $("#myChart2").get(0).getContext("2d");
+  myNewChart = new Chart(ctx);
+
+  var data = {
+    labels: <%= raw(@days) %>,
+    datasets: [
+      <% @cumulative.each do |current| %>
+        {
+          <% current.each do |key, value| %>
+            <% pre = (key != :data ? '"' : '') %>
+            <%= key %>: <%= raw(pre + value.to_s + pre) %>,
+          <% end %>
+        },
+      <% end %>
+    ]
+  };
+
+  var myLineChart = new Chart(ctx).Line(data, {
+    scaleBeginAtZero: true,
+    responsive: true,
+    multiTooltipTemplate: "<\%= datasetLabel %> - <\%= value %>"
+  });
+
+</script>
+
+<h3><a href="https://github.com/fastlane/refresher" target="_blank">View the source code of 'refresher'</a></h3>
