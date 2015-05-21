@@ -27,7 +27,7 @@ enhancer
 
 ### Privacy
 
-This does **not** store any personal or sensitive data! Everything `enhancer` stores is the ratio between successful and failed action runs.
+This does **not** store any personal or sensitive data. Everything `enhancer` stores is the ratio between successful and failed action runs.
 
 ### Why?
 
