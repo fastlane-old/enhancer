@@ -63,46 +63,33 @@ class BaconsController < ApplicationController
     @days = []
     start_time = Time.at(1428883200) # the first day
 
+    values = []
     Bacon.all.order(:launch_date).each do |bacon|
-      random_color = "rgba(#{ran}, #{ran}, #{ran}, 1.0)"
-      @data[bacon.action_name] ||= {
-        label: bacon.action_name,
-        fillColor: "rgba(220,220,220,0.2)",
-        strokeColor: random_color,
-        pointColor: random_color,
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(220,220,220,1)",
-        data: []
-      }
-
       counter = (bacon.launch_date.to_date - start_time.to_date).to_i
 
-      @data[bacon.action_name][:data][counter] ||= 0
-      @data[bacon.action_name][:data][counter] += bacon.launches
-
-      # Fill nils with 0
-      @data[bacon.action_name][:data].each_with_index do |k, index|
-        @data[bacon.action_name][:data][index] ||= 0
-      end
+      values[counter] ||= {launches: 0, errors: 0}
+      values[counter][:launches] += bacon.launches
+      values[counter][:errors] += bacon.number_errors
 
       formatted_string = bacon.launch_date.strftime("%d.%m.%Y")
       @days << formatted_string unless @days.include?formatted_string
     end
 
-    # Sort by # of launches
-    @data = @data.sort_by { |name, data| data[:data].sum }.reverse
-
-    # Now generate cumulative graph
-    @cumulative = []
-    @data.each do |key, current|
-      new_val = current.dup
-      new_data = []
-      new_val[:data].each_with_index do |value, i|
-        new_data[i] = value + (new_data[-1] || 0)
-      end
-      new_val[:data] = new_data
-      @cumulative << new_val
+    # Fill nils with 0
+    values.each_with_index do |k, index|
+      puts k
+      values[index] = (k[:errors].to_f / k[:launches].to_f * 100 rescue 0).round
     end
+
+    @data[0] ||= {
+      label: "Success Rate",
+      fillColor: "rgba(220,220,220,0.2)",
+      strokeColor: "rgba(220,220,220)",
+      pointColor: "rgba(220,220,220)",
+      pointStrokeColor: "#fff",
+      pointHighlightFill: "#fff",
+      pointHighlightStroke: "rgba(220,220,220,1)",
+      data: values
+    }
   end
 end

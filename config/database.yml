@@ -1,6 +1,6 @@
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
+  adapter: postgresql
+  database: enhancer
   pool: 5
   timeout: 5000
 
