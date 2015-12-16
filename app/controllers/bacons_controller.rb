@@ -1,4 +1,6 @@
 class BaconsController < ApplicationController
+  before_filter :authenticate, only: [:graphs, :stats]
+
   def did_launch
     launches = JSON.parse(params[:steps]) rescue nil
     unless launches
@@ -92,4 +94,11 @@ class BaconsController < ApplicationController
       data: values
     }
   end
+
+  private
+    def authenticate
+      authenticate_or_request_with_http_basic do |username, password|
+        username == "admin" && password == ENV["FL_PASSWORD"]
+      end
+    end
 end
