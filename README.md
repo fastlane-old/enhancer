@@ -32,7 +32,7 @@ This does **not** store any personal or sensitive data. Everything `enhancer` st
 
 ### Why?
 
-- This data is very useful to find out which actions tend to cause the most build errors and improve them! I'm sure 20% of the actions account for 80% of the crashes! It's helpful to know which ones to work on.
+- This data is very useful to find out which actions tend to cause the most build errors and improve them! 
 - The actions that are used by many developers should be improved in both implementation and documentation. It's great to know which actions are worth improving!
 
 To sum up, all data is used to improve `fastlane` more efficiently
@@ -42,10 +42,6 @@ To sum up, all data is used to improve `fastlane` more efficiently
 You can set the environment variable `FASTLANE_OPT_OUT_USAGE` to opt out.
 
 Alternatively, add `opt_out_usage` to your `Fastfile`.
-
-### Data
-
-All data is publicly available: [https://fastlane-enhancer.herokuapp.com](https://fastlane-enhancer.herokuapp.com).
 
 # License
 This project is licensed under the terms of the MIT license. See the LICENSE file.
