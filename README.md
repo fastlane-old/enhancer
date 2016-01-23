@@ -43,5 +43,8 @@ You can set the environment variable `FASTLANE_OPT_OUT_USAGE` to opt out.
 
 Alternatively, add `opt_out_usage` to your `Fastfile`.
 
+# Code of Conduct
+Help us keep `fastlane` open and inclusive. Please read and follow our [Code of Conduct](https://github.com/fastlane/code-of-conduct).
+
 # License
 This project is licensed under the terms of the MIT license. See the LICENSE file.
