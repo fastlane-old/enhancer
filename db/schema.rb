@@ -11,15 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150413194641) do
+ActiveRecord::Schema.define(version: 20160509194220) do
 
   create_table "bacons", force: :cascade do |t|
-    t.string   "action_name"
-    t.date     "launch_date"
-    t.integer  "launches"
-    t.integer  "number_errors"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "action_name",    limit: 255,                     null: false
+    t.date     "launch_date",                                    null: false
+    t.integer  "launches",                   default: 0,         null: false
+    t.integer  "number_errors",              default: 0,         null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "tool_version",   limit: 50,  default: "unknown", null: false
+    t.integer  "number_crashes",             default: 0,         null: false
   end
 
 end
