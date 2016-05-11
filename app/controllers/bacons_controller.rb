@@ -35,7 +35,7 @@ class BaconsController < ApplicationController
   end
 
   def update_bacon_for(action_name, launch_date)
-    version = tool_version(action)
+    version = tool_version(action_name)
     Bacon.find_by(action_name: action_name, launch_date: launch_date, tool_version: version).try do |bacon|
       yield bacon
     end
