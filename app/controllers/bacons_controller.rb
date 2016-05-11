@@ -3,7 +3,6 @@ class BaconsController < ApplicationController
 
   def did_launch
     launches = JSON.parse(params[:steps]) rescue nil
-
     unless launches
       render json: { error: "Missing values" }
       return
@@ -12,33 +11,24 @@ class BaconsController < ApplicationController
     # Store the number of runs per action
     now = Time.now.to_date
     launches.each do |action, count|
-      entry = Bacon.find_or_create_by(action_name: action, launch_date: now, tool_version: tool_version(action))
-      entry.increment(:launches, count)
+      entry = Bacon.where(action_name: action, launch_date: now).take
+      entry ||= Bacon.create!(action_name: action, launch_date: now, launches: 0, number_errors: 0)
+
+      entry.launches += count
       entry.save
     end
 
-    if params[:error]
-      update_bacon_for(params[:error], now) do |bacon|
-        bacon.increment(:number_errors)
-        bacon.save
-      end
-    end
-
-    if params[:crash]
-      update_bacon_for(params[:crash], now) do |bacon|
-        bacon.increment(:number_crashes)
-        bacon.save
+    # Store the error information
+    error_name = params[:error]
+    if error_name
+      b = Bacon.where(action_name: error_name, launch_date: now).take
+      if b
+        b.number_errors += 1
+        b.save
       end
     end
 
     render json: { success: true }
-  end
-
-  def update_bacon_for(action_name, launch_date)
-    version = tool_version(action)
-    Bacon.find_by(action_name: action_name, launch_date: launch_date, tool_version: version).try do |bacon|
-      yield bacon
-    end
   end
 
   def stats
@@ -64,14 +54,6 @@ class BaconsController < ApplicationController
       { value: 0.1, color: 'yellow' },
       { value: 0.0, color: 'green' }
     ]
-  end
-
-  def tool_version(name)
-    versions[name] || 'unknown'
-  end
-
-  def versions
-    @versions ||= JSON.parse(params[:versions]) rescue {}
   end
 
   def ran
