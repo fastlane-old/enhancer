@@ -1,0 +1,114 @@
+<style>
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+tr th,
+tr td {
+  padding: 10px;
+  vertical-align: top;
+}
+
+tr {
+  border-bottom: 1px solid #ccc;
+}
+
+tr:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+h1, h2, h3, h4 {
+  padding-top: 20px;
+}
+</style>
+
+<form>
+<%= select_tag 'tool_select', grouped_options_for_select(@tool_select_groups, @tool) %>
+</form>
+
+<script>
+$('#tool_select').on('change', function() {
+  var baseUrl = "<%= stability_url %>?tool=";
+  window.location = baseUrl + this.value;
+});
+</script>
+
+<h2><%= @tool %> Stability</h2>
+
+<h3>All-time Summary</h3>
+
+<table>
+<thead>
+  <tr>
+    <th>Launches</th>
+    <th>User Errors</th>
+    <th>Crashes</th>
+    <th>Success Rate</th>
+    <th>User Error Rate</th>
+    <th>Crash Rate</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+  <%- if @summary %>
+    <td><%= @summary.sum_launches %></td>
+    <td><%= @summary.sum_user_errors %></td>
+    <td><%= @summary.sum_crashes %></td>
+    <td><%= @summary.success_rate.round(2) %>%</td>
+    <td><%= @summary.user_error_rate.round(2) %>%</td>
+    <td><%= @summary.crash_rate.round(2) %>%</td>
+  <%- else %>
+    <td colspan="6">No data available</td>
+  <%- end %>
+  </tr>
+</tbody>
+</table>
+
+<h3>Details</h3>
+
+<%- if @version %>
+<%= link_to 'Clear version', stability_path(tool: @tool), style: "color:orange;" %>
+<%- end %>
+
+<table>
+<thead>
+  <tr>
+    <th>Launch Date</th>
+    <th>Version</th>
+    <th>Launches</th>
+    <th>User Errors</th>
+    <th>Crashes</th>
+    <th>Success Rate</th>
+    <th>User Error Rate</th>
+    <th>Crash Rate</th>
+  </tr>
+</thead>
+<tbody>
+<%- @details.each do |date, bacons| %>
+  <% bacons.sort_by! { |b| Gem::Version.new(b.tool_version) }.reverse! %>
+
+  <%- bacons.each_with_index do |bacon, index| %>
+  <tr>
+    <%- if index.zero? %>
+    <td rowspan="<%= bacons.count %>"><%= date %></td>
+    <% end %>
+    <td><%= link_to bacon.tool_version, stability_path(tool: @tool, version: bacon.tool_version) %></td>
+    <td><%= bacon.launches %></td>
+    <td><%= bacon.number_user_errors %></td>
+    <td><%= bacon.number_crashes %></td>
+    <td><%= bacon.success_rate.round(2) %>%</td>
+    <td><%= bacon.user_error_rate.round(2) %>%</td>
+    <td><%= bacon.crash_rate.round(2) %>%</td>
+  </tr>
+  <%- end %>
+<%- end -%>
+<%- if @details.empty? %>
+<tr>
+  <td colspan="8">No data available</td>
+</tr>
+<%- end %>
+</tbody>
+</table>
+
+<h4><a href="https://github.com/fastlane/enhancer" target="_blank">View the source code of 'enhancer'</a></h4>
