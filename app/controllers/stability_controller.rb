@@ -6,9 +6,11 @@ class StabilityController < ApplicationController
     @version = params[:version]
 
     all_names = select_all_names
+    all_plugins = select_all_plugins
     @tool_select_groups = {
       'Tools' => TOOLS,
-      'Actions' => all_names - TOOLS
+      'Actions' => all_names - TOOLS - all_plugins,
+      'Plugins' => all_plugins
     }
 
     @summary = select_summary_info(@tool)
@@ -19,6 +21,14 @@ class StabilityController < ApplicationController
     Bacon.where("tool_version <> 'unknown'").
       pluck(:action_name).
       map(&:downcase). # Unfortunately we have values like "FASTLANE" and 'Fastlane'
+      uniq.
+      sort
+  end
+
+  def select_all_plugins
+    Bacon.where("action_name LIKE :prefix", prefix: "fastlane-plugin-%").
+      pluck(:action_name).
+      map(&:downcase).
       uniq.
       sort
   end
