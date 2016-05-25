@@ -26,7 +26,7 @@ class StabilityController < ApplicationController
   end
 
   def select_all_plugins
-    Bacon.where("action_name LIKE :prefix", prefix: "fastlane-plugin-%").
+    Bacon.where("action_name LIKE fastlane-plugin-%").
       pluck(:action_name).
       map(&:downcase).
       uniq.
