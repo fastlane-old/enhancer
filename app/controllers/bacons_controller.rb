@@ -42,13 +42,15 @@ class BaconsController < ApplicationController
   end
 
   def stats
-    actions = Bacon.all.collect { |b| b.action_name }.uniq
+    launches = Bacon.group(:action_name).sum(:launches)
+    number_errors = Bacon.group(:action_name).sum(:number_errors)
+
     @sums = []
-    actions.each do |action|
+    launches.each do |action, _|
       entry = {
         action: action,
-        launches: Bacon.where(action_name: action).sum(:launches),
-        errors: Bacon.where(action_name: action).sum(:number_errors)
+        launches: launches[action],
+        errors: number_errors[action],
       }
       entry[:ratio] = (entry[:errors].to_f / entry[:launches].to_f).round(3)
       @sums << entry
