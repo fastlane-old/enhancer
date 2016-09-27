@@ -67,7 +67,10 @@ class BaconsController < ApplicationController
       { value: 0.0, color: 'green' }
     ]
 
-    render json: @by_launches if request.format.symbol == :json
+    respond_to do |format|
+      format.html # renders the matching template
+      format.json { render json: @by_launches }
+    end
   end
 
   def tool_version(name)
