@@ -25,6 +25,8 @@ gem 'chart-js-rails' # nice HTML5 graphs
 
 gem 'table_for_collection'
 
+gem 'faraday'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
