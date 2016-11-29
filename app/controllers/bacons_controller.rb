@@ -85,8 +85,17 @@ class BaconsController < ApplicationController
   end
 
   def stats
-    launches = Bacon.group(:action_name).sum(:launches)
-    number_errors = Bacon.group(:action_name).sum(:number_errors)
+    bacon_actions = Bacon.group(:action_name)
+
+    if params[:weeks]
+      num_weeks = params[:weeks].to_i
+      cutoff_date = num_weeks.weeks.ago
+
+      bacon_actions = bacon_actions.where("launch_date >= :cutoff_date", { cutoff_date: cutoff_date })
+    end
+
+    launches = bacon_actions.sum(:launches)
+    number_errors = bacon_actions.sum(:number_errors)
 
     @sums = []
     launches.each do |action, _|
