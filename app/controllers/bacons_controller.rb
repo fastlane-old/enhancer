@@ -91,24 +91,31 @@ class BaconsController < ApplicationController
       num_weeks = params[:weeks].to_i
       cutoff_date = num_weeks.weeks.ago
 
-      bacon_actions = bacon_actions.where("launch_date >= :cutoff_date", { cutoff_date: cutoff_date })
+      bacon_actions = bacon_actions.where("launch_date >= :cutoff_date", cutoff_date: cutoff_date)
     end
 
-    launches = bacon_actions.sum(:launches)
-    number_errors = bacon_actions.sum(:number_errors)
+    # Selects the sums and action name without converting into a Bacon object
+    launch_info = bacon_actions.pluck("sum(number_errors)", "sum(launches)", :action_name)
 
     @sums = []
-    launches.each do |action, _|
+    launch_info.each do |errors, launches, action|
       entry = {
         action: action,
-        launches: launches[action],
-        errors: number_errors[action],
+        launches: launches,
+        errors: errors,
+        ratio: (errors.to_f / launches.to_f).round(3),
       }
-      entry[:ratio] = (entry[:errors].to_f / entry[:launches].to_f).round(3)
-      @sums << entry
+      ratio_above = params[:ratio_above].nil? ? 0.0 : params[:ratio_above].to_f
+      ratio_below = params[:ratio_below].nil? ? 1.0 : params[:ratio_below].to_f
+      @sums << entry if entry[:ratio] >= ratio_above && entry[:ratio] <= ratio_below
     end
 
     @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
+
+    if params[:top]
+      top_percentage = params[:top].to_i / 100.0
+      @sums = @sums.first(top_percentage * @sums.count)
+    end
 
     @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
 
