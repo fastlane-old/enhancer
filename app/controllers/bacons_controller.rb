@@ -95,15 +95,16 @@ class BaconsController < ApplicationController
     end
 
     # Selects the sums and action name without converting into a Bacon object
-    launch_info = bacon_actions.pluck("sum(number_errors)", "sum(launches)", :action_name)
+    launch_info = bacon_actions.pluck("sum(number_errors)", "sum(launches)", "sum(number_crashes)", :action_name)
 
     @sums = []
-    launch_info.each do |errors, launches, action|
+    launch_info.each do |errors, launches, crashes, action|
       entry = {
         action: action,
         launches: launches,
         errors: errors,
         ratio: (errors.to_f / launches.to_f).round(3),
+        crashes: crashes
       }
       ratio_above = params[:ratio_above].nil? ? 0.0 : params[:ratio_above].to_f
       ratio_below = params[:ratio_below].nil? ? 1.0 : params[:ratio_below].to_f
@@ -112,12 +113,13 @@ class BaconsController < ApplicationController
 
     @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
 
+    @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
+
     if params[:top]
       top_percentage = params[:top].to_i / 100.0
       @sums = @sums.first(top_percentage * @sums.count)
+      @by_launches = @by_launches.first(top_percentage * @by_launches.count)
     end
-
-    @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
 
     @levels = [
       { value: 0.5, color: 'red' },
