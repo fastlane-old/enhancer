@@ -43,6 +43,46 @@ You can set the environment variable `FASTLANE_OPT_OUT_USAGE` to opt out.
 
 Alternatively, add `opt_out_usage` to your `Fastfile`.
 
+### Supported Parameters
+
+Enhancer supports parameters to filter the shown actions. Any combination of parameters are supported.
+
+#### only
+
+Limits the actions that will be shown to the supplied list. It can be used either with a single value or multiple values: 
+
+- `?only=gym`: Only shows info for the `gym` action
+- `?only[]=gym&only[]=testflight&only[]=...`: Only show info for the supplied actions `gym, testflight, ...` 
+
+#### weeks
+
+Limits the data to data from the previous weeks, for example:
+
+- `?weeks=4`: Only show data from the previous 4 weeks
+
+#### ratio_above & ratio_below
+
+Only shows actions that are above or below a certain error ratio. The error ratio is calculated by `number_of_errors / number_of_launches`. 
+
+- `?ratio_above=0.5`: Shows actions with an error ratio >= 0.5
+- `?ratio_below=0.5&ratio_above=0.1`: Shows actions with an error ratio between 0.1 and 0.5
+
+#### top
+
+Show the top % of actions
+
+- `?top=10`: Show the top 10% of actions for each table (by launches and by ratio)
+
+#### Examples
+
+`?top=50&weeks=1&only[]=ipa&only[]=gym`
+
+This will show which of the actions `ipa` and `gym` was used more often in the past week, and which of those had a worse error ratio
+
+`?weeks=4&ratio_above=0.25&ratio_below=0.75`
+
+Shows a list of actions that had an error ratio between 0.25 and 0.75 in the past 4 weeks. 
+
 # Code of Conduct
 Help us keep `fastlane` open and inclusive. Please read and follow our [Code of Conduct](https://github.com/fastlane/code-of-conduct).
 
