@@ -65,6 +65,30 @@ $('#tool_select').on('change', function() {
 </tbody>
 </table>
 
+<h3>Stability per version in %</h3>
+<canvas id="stability"></canvas>
+
+<!-- Javascript lol -->
+<script type="text/javascript">
+  function generateGraph(sel, data, labels) {
+    var ctx = $(sel).get(0).getContext("2d");
+    var data = {
+      labels: labels,
+      datasets: data
+    };
+    var myLineChart = new Chart(ctx , {
+      type: "line",
+      data: data,
+      scaleBeginAtZero: true,
+      responsive: true,
+      animation : false,
+      multiTooltipTemplate: "<\%= datasetLabel %> - <\%= value %>"
+  });
+  }
+
+  generateGraph("#stability", <%= raw(@raw_graph.to_json) %>, <%= raw(@versions) %>)
+</script>
+
 <h3>Details</h3>
 
 <%- if @version %>
