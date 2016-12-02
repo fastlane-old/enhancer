@@ -17,7 +17,7 @@ task :db do
   Bundler.with_clean_env do
     sh "heroku pg:backups capture --app #{app}"
     sh "curl -o latest.dump `heroku pg:backups public-url --app #{app}`"
-    sh "dropdb #{db_name}"
+    sh "dropdb #{db_name} || true"
     sh "createdb #{db_name}"
     sh "pg_restore --verbose --clean --no-acl --no-owner -h localhost -U #{user} -d #{db_name} latest.dump"
   end
