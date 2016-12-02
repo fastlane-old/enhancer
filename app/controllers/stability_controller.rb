@@ -131,7 +131,6 @@ class StabilityController < ApplicationController
   end
 
   def select_details_info(tool)
-    date_limit = 7.days.ago.to_date
     date_limit = 6.months.ago.to_date
 
     select_statement = [
