@@ -87,6 +87,11 @@ class BaconsController < ApplicationController
   def stats
     bacon_actions = Bacon.group(:action_name)
 
+    if params[:only]
+      only_show = params[:only].is_a?(Array) ? params[:only] : [params[:only]]
+      bacon_actions = bacon_actions.where(action_name: only_show)
+    end
+
     if params[:weeks]
       num_weeks = params[:weeks].to_i
       cutoff_date = num_weeks.weeks.ago
