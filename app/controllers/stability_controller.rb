@@ -46,7 +46,7 @@ class StabilityController < ApplicationController
       end
     end
 
-    @graph_data = @graph_data.sort { |x, y| Gem::Version.new(x.first) <=>  Gem::Version.new(y.first) }.to_h
+    @graph_data = Hash[@graph_data.sort { |x, y| Gem::Version.new(x.first) <=> Gem::Version.new(y.first) }]
 
     # @graph_data => {"1.105.3"=>{:number_user_errors=>1225, :number_crashes=>267, :launches => 123123},
     #                 "1.108.0"=>{:number_user_errors=>2195, :number_crashes=>430, :launches => 884743},
