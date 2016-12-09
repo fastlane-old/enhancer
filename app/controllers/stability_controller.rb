@@ -13,7 +13,6 @@ class StabilityController < ApplicationController
       'Plugins' => all_plugins
     }
 
-    @summary = select_summary_info(@tool)
     @details = select_details_info(@tool).group_by(&:launch_date)
 
     # Generate the data we need to show stability grouped by version, instead of date
@@ -110,24 +109,6 @@ class StabilityController < ApplicationController
       map(&:downcase).
       uniq.
       sort
-  end
-
-  def select_summary_info(tool)
-    select_statement = [
-      "action_name",
-      "SUM(launches) as sum_launches",
-      "(SUM(number_errors) - SUM(number_crashes)) as sum_user_errors",
-      "SUM(number_crashes) as sum_crashes",
-      "(1::float - (SUM(number_errors)::float / SUM(launches)::float)) * 100::float as success_rate",
-      "((SUM(number_errors)::float - SUM(number_crashes)::float) / SUM(launches)::float) * 100::float as user_error_rate",
-      "(SUM(number_crashes)::float / SUM(launches)::float) * 100::float as crash_rate"
-    ].join(', ')
-
-    Bacon.select(select_statement).
-      where("tool_version <> 'unknown' AND action_name = ?", tool).
-      group("action_name").
-      order("action_name ASC").
-      first
   end
 
   def select_details_info(tool)
