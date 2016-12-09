@@ -36,35 +36,6 @@ $('#tool_select').on('change', function() {
 
 <h2><%= @tool %> Stability</h2>
 
-<h3>All-time Summary</h3>
-
-<table>
-<thead>
-  <tr>
-    <th>Launches</th>
-    <th>User Errors</th>
-    <th>Crashes</th>
-    <th>Success Rate</th>
-    <th>User Error Rate</th>
-    <th>Crash Rate</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-  <%- if @summary %>
-    <td><%= @summary.sum_launches %></td>
-    <td><%= @summary.sum_user_errors %></td>
-    <td><%= @summary.sum_crashes %></td>
-    <td><%= @summary.success_rate.round(2) %>%</td>
-    <td><%= @summary.user_error_rate.round(2) %>%</td>
-    <td><%= @summary.crash_rate.round(2) %>%</td>
-  <%- else %>
-    <td colspan="6">No data available</td>
-  <%- end %>
-  </tr>
-</tbody>
-</table>
-
 <h3>Stability per version in %</h3>
 <canvas id="stability"></canvas>
 
