@@ -22,7 +22,7 @@ class StabilityController < ApplicationController
     # Now detect the minimum launches we need to show a version
     @details.each do |_, bacon_list|
       bacon_list.each do |current_bacon|
-        current_i = current_bacon.launches * 0.04
+        current_i = current_bacon.launches * 0.1
 
         if minimum_launches_to_show_in_graph.nil? || current_i > minimum_launches_to_show_in_graph
           minimum_launches_to_show_in_graph = current_i
@@ -32,8 +32,6 @@ class StabilityController < ApplicationController
 
     @details.each do |_, bacon_list|
       bacon_list.each do |current_bacon|
-        next if current_bacon.launches < minimum_launches_to_show_in_graph
-
         @graph_data[current_bacon[:tool_version]] ||= {
           number_user_errors: 0,
           number_crashes: 0,
@@ -46,6 +44,11 @@ class StabilityController < ApplicationController
     end
 
     @graph_data = Hash[@graph_data.sort { |x, y| Gem::Version.new(x.first) <=> Gem::Version.new(y.first) }]
+
+    highest_version = @graph_data.keys.last # to see releases that are being rolled out
+    @graph_data.delete_if do |tool_version, data|
+      data[:launches] < minimum_launches_to_show_in_graph && tool_version != highest_version
+    end
 
     # @graph_data => {"1.105.3"=>{:number_user_errors=>1225, :number_crashes=>267, :launches => 123123},
     #                 "1.108.0"=>{:number_user_errors=>2195, :number_crashes=>430, :launches => 884743},
