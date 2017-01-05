@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get 'index' => 'bacons#stats'
   post 'did_launch' => 'bacons#did_launch'
   get 'stability' => 'stability#index'
+  get 'okrs' => 'stability#okrs'
 end

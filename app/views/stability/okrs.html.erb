@@ -1,0 +1,60 @@
+<h1>fastlane stability OKRs</h1>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>Goal</th><th>Actual</th></tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>Number of tools being stable</td>
+      <td><%= @okr_status_tools[:goal] %></td>
+      <td style="background-color: <%= @okr_status_tools[:color] %>">
+        <%= @okr_status_tools[:actual] %>
+      </td>
+    </tr>
+    <tr>
+      <td>Number of actions being stable</td>
+      <td><%= @okr_status_actions[:goal] %></td>
+      <td style="background-color: <%= @okr_status_actions[:color] %>">
+        <%= @okr_status_actions[:actual] %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br />
+
+<table style="float: left; margin-right: 20px">
+  <thead>
+    <tr><th>Tool</th><th>Goal Stability</th><th>Actual Stability</th><th>State</th></tr>
+  </thead>
+
+  <tbody>
+    <% @okrs_tools.each do |okr| %>
+      <tr>
+        <td><%= okr[:action_name] %></td>
+        <td><%= okr[:goal_value] %></td>
+        <td><%= okr[:actual_value] %></td>
+        <td><%= okr[:emoji] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table style="float: left;">
+  <thead>
+    <tr><th>Action</th><th>Goal Stability</th><th>Actual Stability</th><th>State</th></tr>
+  </thead>
+
+  <tbody>
+    <% @okrs_actions.each do |okr| %>
+      <tr>
+        <td><%= okr[:action_name] %></td>
+        <td><%= okr[:goal_value] %></td>
+        <td><%= okr[:actual_value] %></td>
+        <td><%= okr[:emoji] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
