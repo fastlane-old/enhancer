@@ -98,6 +98,7 @@ class StabilityController < ApplicationController
     ]
   end
 
+  # pass ?weeks=x to 
   def okrs
     # Render our OKR goals around fastlane stability
     goals = {
@@ -105,11 +106,11 @@ class StabilityController < ApplicationController
       deliver: 0.7,
       fastlane: 0.7,
       frameit: 0.9,
-      gym: 0.769,
+      gym: 0.76,
       match: 0.88,
       pem: 0.88,
       pilot: 0.7,
-      produce: 0.86,
+      produce: 0.85,
       scan: 0.65, # this is lower than 0.7, beacuse failing tests also report a lower success rate
       screengrab: 0.7,
       sigh: 0.86,
@@ -121,7 +122,7 @@ class StabilityController < ApplicationController
     @number_of_greens_goal = 14
 
     @okrs_per_tool = goals.collect do |action_name, goal|
-      data_for_action = select_details_info(action_name, 3)
+      data_for_action = select_details_info(action_name, (params["weeks"] || 3 * 4).to_i) # defaults to one quarter
       number_of_launches = data_for_action.sum(:launches)
       data_for_action_array = data_for_action.to_a
       number_of_non_successes = data_for_action_array.sum(&:number_user_errors) + data_for_action_array.sum(&:number_crashes)
@@ -166,8 +167,8 @@ class StabilityController < ApplicationController
       sort
   end
 
-  def select_details_info(tool, number_of_months = 6)
-    date_limit = number_of_months.months.ago.to_date
+  def select_details_info(tool, number_of_weeks = 26)
+    date_limit = number_of_weeks.weeks.ago.to_date
 
     select_statement = [
       "action_name",
