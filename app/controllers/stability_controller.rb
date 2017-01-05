@@ -176,14 +176,13 @@ class StabilityController < ApplicationController
     @okrs_tools.sort! { |a, b| a[:actual_value] <=> b[:actual_value] }
     @okrs_actions.sort! { |a, b| a[:actual_value] <=> b[:actual_value] }
     
-    # 
+    # Calculating the success of the high level OKRs
     @okr_status_tools = {
       goal: @okrs_tools.count,
       actual: @okrs_tools.sum {|a| a[:success] }
     }
     @okr_status_tools[:color] = okr_color(@okr_status_tools[:actual], @okr_status_tools[:goal])
 
-    # 
     @okr_status_actions = {
       goal: @okrs_actions.count,
       actual: @okrs_actions.sum {|a| a[:success] }
