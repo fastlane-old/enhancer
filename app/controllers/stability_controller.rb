@@ -98,6 +98,58 @@ class StabilityController < ApplicationController
     ]
   end
 
+  def okrs
+    # Render our OKR goals around fastlane stability
+    goals = {
+      cert: 0.89,
+      deliver: 0.7,
+      fastlane: 0.7,
+      frameit: 0.9,
+      gym: 0.769,
+      match: 0.88,
+      pem: 0.88,
+      pilot: 0.7,
+      produce: 0.86,
+      scan: 0.65, # this is lower than 0.7, beacuse failing tests also report a lower success rate
+      screengrab: 0.7,
+      sigh: 0.86,
+      snapshot: 0.85,
+      supply: 0.73
+    }
+
+    @number_of_greens = 0
+    @number_of_greens_goal = 14
+
+    @okrs_per_tool = goals.collect do |action_name, goal|
+      data_for_action = select_details_info(action_name, 3)
+      number_of_launches = data_for_action.sum(:launches)
+      data_for_action_array = data_for_action.to_a
+      number_of_non_successes = data_for_action_array.sum(&:number_user_errors) + data_for_action_array.sum(&:number_crashes)
+      number_of_successes = number_of_launches - number_of_non_successes
+      actual_value = (number_of_successes / number_of_launches.to_f).round(3)
+
+      @number_of_greens += 1 if goal <= actual_value
+
+      {
+        action_name: action_name,
+        goal_value: goal,
+        actual_value: actual_value,
+        emoji: (goal > actual_value) ? "🔥" : "🌴"
+      }
+    end
+
+    @okrs_per_tool.sort! { |a, b| a[:actual_value] <=> b[:actual_value] }
+
+    @okr_status_color = case (@number_of_greens / @number_of_greens_goal.to_f)
+      when 0...0.5
+        "red"
+      when 0.5...0.7
+        "yellow"
+      when 0.7...1.0
+        "#47FD49"
+    end
+  end
+
   def select_all_names
     Bacon.where("tool_version <> 'unknown'").
       pluck(:action_name).
@@ -114,8 +166,8 @@ class StabilityController < ApplicationController
       sort
   end
 
-  def select_details_info(tool)
-    date_limit = 6.months.ago.to_date
+  def select_details_info(tool, number_of_months = 6)
+    date_limit = number_of_months.months.ago.to_date
 
     select_statement = [
       "action_name",

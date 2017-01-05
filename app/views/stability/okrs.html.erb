@@ -1,0 +1,36 @@
+<h1>fastlane stability OKRs</h1>
+
+<table>
+  <thead>
+    <tr><th>Metric</th><th>Goal</th><th>Actual</th></tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td>Number of tools being stable</td>
+      <td><%= @number_of_greens_goal %></td>
+      <td style="background-color: <%= @okr_status_color %>">
+        <%= @number_of_greens %>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br />
+
+<table>
+  <thead>
+    <tr><th>Tool</th><th>Goal Stability</th><th>Actual Stability</th><th>State</th></tr>
+  </thead>
+
+  <tbody>
+    <% @okrs_per_tool.each do |okr| %>
+      <tr>
+        <td><%= okr[:action_name] %></td>
+        <td><%= okr[:goal_value] %></td>
+        <td><%= okr[:actual_value] %></td>
+        <td><%= okr[:emoji] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

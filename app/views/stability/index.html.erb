@@ -1,28 +1,3 @@
-<style>
-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-
-tr th,
-tr td {
-  padding: 10px;
-  vertical-align: top;
-}
-
-tr {
-  border-bottom: 1px solid #ccc;
-}
-
-tr:nth-child(even) {
-  background-color: #f1f1f1;
-}
-
-h1, h2, h3, h4 {
-  padding-top: 20px;
-}
-</style>
-
 <form>
 <%= select_tag 'tool_select', grouped_options_for_select(@tool_select_groups, @tool) %>
 </form>
