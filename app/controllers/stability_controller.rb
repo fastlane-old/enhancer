@@ -45,7 +45,11 @@ class StabilityController < ApplicationController
 
     @graph_data = Hash[@graph_data.sort { |x, y| Gem::Version.new(x.first) <=> Gem::Version.new(y.first) }]
 
-    highest_version = @graph_data.keys.last # to see releases that are being rolled out
+    # We always want to show the most current version to see releases that are being rolled out
+    # We can't just use `@graph_data.keys.last`, as people fork fastlane and increase the fastlane version to 100
+    # not super friendly, but something we can work around by accessing the RubyGems API
+    require 'open-uri'
+    highest_version = JSON.parse(open("https://rubygems.org/api/v1/gems/fastlane.json").read)["version"]
     @graph_data.delete_if do |tool_version, data|
       data[:launches] < minimum_launches_to_show_in_graph && tool_version != highest_version
     end
