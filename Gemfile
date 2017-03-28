@@ -27,6 +27,9 @@ gem 'table_for_collection'
 
 gem 'faraday'
 
+# background jobs using a Redis server as the queue
+gem 'sidekiq'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

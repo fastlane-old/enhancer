@@ -46,40 +46,7 @@ class BaconsController < ApplicationController
   def send_analytic_ingester_event(fastfile_id, error, crash)
     return unless ENV['ANALYTIC_INGESTER_URL'].present? && fastfile_id.present?
 
-    start = Time.now
-
-    completion_status =  crash ? 'crash' : ( error ? 'error' : 'success')
-    analytic_event_body = {
-      analytics: [{
-        event_source: {
-          oauth_app_name: 'fastlane-enhancer',
-          product: 'fastlane_web_onboarding'
-        },
-        actor: {
-          name:'customer',
-          detail: fastfile_id
-        },
-        action: {
-          name: 'fastfile_executed'
-        },
-        primary_target: {
-          name: 'fastlane_completion_status',
-          detail: completion_status
-        },
-        millis_since_epoch: Time.now.to_i * 1000,
-        version: 1
-      }]
-    }.to_json
-
-    puts "Sending analytic event: #{analytic_event_body}"
-
-    Faraday.new(:url => ENV["ANALYTIC_INGESTER_URL"]).post do |req|
-      req.headers['Content-Type'] = 'application/json'
-      req.body = analytic_event_body
-    end
-
-    stop = Time.now
-    logger.debug "Sending analytic ingester event took #{(stop - start) * 1000}ms"
+    AnalyticIngesterWorker.perform_async(fastfile_id, error, crash)
   end
 
   def update_bacon_for(action_name, launch_date)
