@@ -19,14 +19,14 @@ class BaconsController < ApplicationController
       entry.save
     end
 
-    if params[:error]
+    if params[:error].present?
       update_bacon_for(params[:error], now) do |bacon|
         bacon.increment(:number_errors)
         bacon.save
       end
     end
 
-    if params[:crash]
+    if params[:crash].present?
       update_bacon_for(params[:crash], now) do |bacon|
         bacon.increment(:number_crashes)
         bacon.save
@@ -45,6 +45,8 @@ class BaconsController < ApplicationController
   # by an automated process, such as fastlane web onboarding
   def send_analytic_ingester_event(fastfile_id, error, crash)
     return unless ENV['ANALYTIC_INGESTER_URL'].present? && fastfile_id.present?
+
+    start = Time.now
 
     completion_status =  crash ? 'crash' : ( error ? 'error' : 'success')
     analytic_event_body = {
@@ -75,6 +77,9 @@ class BaconsController < ApplicationController
       req.headers['Content-Type'] = 'application/json'
       req.body = analytic_event_body
     end
+
+    stop = Time.now
+    logger.debug "Sending analytic ingester event took #{(stop - start) * 1000}ms"
   end
 
   def update_bacon_for(action_name, launch_date)
