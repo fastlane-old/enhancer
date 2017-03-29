@@ -71,11 +71,14 @@ class BaconsController < ApplicationController
       bacon_actions = bacon_actions.where("launch_date >= :cutoff_date", cutoff_date: cutoff_date)
     end
 
+    @minimum_launches = params[:minimum_launches].to_i || 50 * params[:weeks].to_i
+
     # Selects the sums and action name without converting into a Bacon object
     launch_info = bacon_actions.pluck("sum(number_errors)", "sum(launches)", "sum(number_crashes)", :action_name)
 
     @sums = []
     launch_info.each do |errors, launches, crashes, action|
+      next if launches < @minimum_launches
       entry = {
         action: action,
         launches: launches,
