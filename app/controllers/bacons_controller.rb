@@ -78,6 +78,7 @@ class BaconsController < ApplicationController
     launch_info.each do |errors, launches, crashes, action|
       entry = {
         action: action,
+        action_short: action.gsub("fastlane-plugin-", "plugin-"),
         launches: launches,
         errors: errors,
         ratio: (errors.to_f / launches.to_f).round(3),

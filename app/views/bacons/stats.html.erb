@@ -1,9 +1,15 @@
 <style type="text/css">
   * { 
-       font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-     font-weight: 300;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight: 300;
   }
-  th { font-weight: bold; }
+  th { 
+    font-weight: bold;
+  }
+  td {
+    white-space: nowrap; text-overflow:ellipsis; overflow: hidden; 
+    max-width:800px;
+  }
 
   .red { background-color: #C55; }
   .orange { background-color: orange; }
@@ -16,8 +22,8 @@
 <p>This is the number of times an action was run and compared to the number of errors this action caused. More information on <a href="https://github.com/fastlane/enhancer" target="_blank">GitHub</a></p>
 
 <table>
-  <tr>
-    <td style="padding-right: 100px">
+  <tr style="width:20%">
+    <td style="padding-right: 20px">
       By # Launches
       <%= table_for @by_launches, html: {
           tr: {
@@ -30,7 +36,7 @@
             end
           } 
         } do -%>
-        <% columns :action, :ratio, :launches, :errors, :crashes %>
+        <% columns :action_short, :ratio, :launches, :errors, :crashes %>
       <% end %>
     </td>
     <td>
@@ -46,7 +52,7 @@
             end
           } 
         } do -%>
-        <% columns :action, :ratio, :launches, :errors, :crashes %>
+        <% columns :action_short, :ratio, :launches, :errors, :crashes %>
       <% end %>
     </td>
   </tr>
