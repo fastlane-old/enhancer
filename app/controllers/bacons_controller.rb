@@ -46,7 +46,7 @@ class BaconsController < ApplicationController
   def send_analytic_ingester_event(fastfile_id, error, crash)
     return unless ENV['ANALYTIC_INGESTER_URL'].present? && fastfile_id.present?
 
-    AnalyticIngesterWorker.perform_async(fastfile_id, error, crash)
+    Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash)
   end
 
   def update_bacon_for(action_name, launch_date)

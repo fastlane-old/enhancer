@@ -1,9 +1,9 @@
 require 'faraday'
 
 class AnalyticIngesterWorker
-  include Sidekiq::Worker
+  @queue = :analytic_ingester
 
-  def perform(fastfile_id, error, crash)
+  def self.perform(fastfile_id, error, crash)
     start = Time.now
 
     completion_status =  crash.present? ? 'crash' : ( error.present? ? 'error' : 'success')

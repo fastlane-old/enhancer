@@ -27,8 +27,12 @@ gem 'table_for_collection'
 
 gem 'faraday'
 
+gem 'pg'
+
 # background jobs using a Redis server as the queue
-gem 'sidekiq'
+gem 'resque', '~> 1.27.2'
+
+gem 'foreman'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -52,9 +56,6 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-
-
 group :production do
-  gem 'pg' # Heroku
   gem 'rails_12factor' # Heroku (http://stackoverflow.com/questions/18324063/rails-4-images-not-loading-on-heroku)
 end
