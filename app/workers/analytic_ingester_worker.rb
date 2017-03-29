@@ -6,7 +6,7 @@ class AnalyticIngesterWorker
   def perform(fastfile_id, error, crash)
     start = Time.now
 
-    completion_status =  crash ? 'crash' : ( error ? 'error' : 'success')
+    completion_status =  crash.present? ? 'crash' : ( error.present? ? 'error' : 'success')
     analytic_event_body = {
       analytics: [{
         event_source: {
