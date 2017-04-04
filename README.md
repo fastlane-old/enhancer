@@ -96,6 +96,13 @@ Limits the data to data from the previous weeks, for example:
 
 - `?weeks=4`: Only show data from the previous 4 weeks
 
+#### minimum_launches
+
+Only shows action with a certain mimimum number of launches
+
+- `?minimum_launches=500000`: only show the most used actions
+- `?minimum_launches=50000&weeks=4`: only show actions with 50,000 launches within the last 4 weeks
+
 #### ratio_above & ratio_below
 
 Only shows actions that are above or below a certain error ratio. The error ratio is calculated by `number_of_errors / number_of_launches`.
