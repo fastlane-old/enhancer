@@ -64,7 +64,7 @@ FL_PASSWORD=[password used to see the web dashboard]
 
 Heroku uses something called a `Procfile` to track multiple processes that you want have started up, and a gem called `foreman` knows how to run these things for you locally
 
-* Run `bundle exec foreman start` to start up the `web` and `worker` processes
+* Run `RAILS_ENV=development bundle exec foreman start` to start up the `web` and `worker` processes
 
 ```
 $ bundle exec foreman start

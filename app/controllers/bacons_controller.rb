@@ -12,26 +12,7 @@ class BaconsController < ApplicationController
     end
 
     # Store the number of runs per action
-    now = Time.now.to_date
-    launches.each do |action, count|
-      entry = Bacon.find_or_create_by(action_name: action, launch_date: now, tool_version: tool_version(action))
-      entry.increment(:launches, count)
-      entry.save
-    end
-
-    if params[:error].present?
-      update_bacon_for(params[:error], now) do |bacon|
-        bacon.increment(:number_errors)
-        bacon.save
-      end
-    end
-
-    if params[:crash].present?
-      update_bacon_for(params[:crash], now) do |bacon|
-        bacon.increment(:number_crashes)
-        bacon.save
-      end
-    end
+    Resque.enqueue(BaconUpdaterWorker, launches, params[:error], params[:crash])
 
     # Only report analytic ingester events for fastlane tool launches
     if launches.size == 1 && launches['fastlane']
@@ -47,13 +28,6 @@ class BaconsController < ApplicationController
     return unless ENV['ANALYTIC_INGESTER_URL'].present? && fastfile_id.present?
 
     Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash)
-  end
-
-  def update_bacon_for(action_name, launch_date)
-    version = tool_version(action_name)
-    Bacon.find_by(action_name: action_name, launch_date: launch_date, tool_version: version).try do |bacon|
-      yield bacon
-    end
   end
 
   def stats
@@ -118,13 +92,5 @@ class BaconsController < ApplicationController
       format.html # renders the matching template
       format.json { render json: @by_launches }
     end
-  end
-
-  def tool_version(name)
-    versions[name] || 'unknown'
-  end
-
-  def versions
-    @versions ||= JSON.parse(params[:versions]) rescue {}
   end
 end
