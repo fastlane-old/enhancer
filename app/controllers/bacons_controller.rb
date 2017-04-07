@@ -74,6 +74,8 @@ class BaconsController < ApplicationController
     @sums.sort! { |a, b| b[:ratio] <=> a[:ratio] }
 
     @by_launches = @sums.sort { |a, b| b[:launches] <=> a[:launches] }
+    # Add the ranking number as one of the values per hash
+    @by_launches.each_with_index { |value, index| value[:index] = index + 1 }
 
     if params[:top]
       top_percentage = params[:top].to_i / 100.0
