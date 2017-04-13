@@ -14,20 +14,17 @@ class BaconsController < ApplicationController
     # Store the number of runs per action
     Resque.enqueue(BaconUpdaterWorker, launches, params[:error], params[:crash])
 
-    # Only report analytic ingester events for fastlane tool launches
-    if launches.size == 1 && launches['fastlane']
-      send_analytic_ingester_event(params[:fastfile_id], params[:error], params[:crash])
-    end
+    send_analytic_ingester_event(params[:fastfile_id], params[:error], params[:crash], launches, Time.now.to_i)
 
     render json: { success: true }
   end
 
   # This helps us track the success/failure of Fastfiles which are generated
   # by an automated process, such as fastlane web onboarding
-  def send_analytic_ingester_event(fastfile_id, error, crash)
-    return unless ENV['ANALYTIC_INGESTER_URL'].present? && fastfile_id.present?
+  def send_analytic_ingester_event(fastfile_id, error, crash, launches, timestamp_seconds)
+    return unless ENV['ANALYTIC_INGESTER_URL'].present?
 
-    Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash)
+    Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash, launches, timestamp_seconds)
   end
 
   def stats
