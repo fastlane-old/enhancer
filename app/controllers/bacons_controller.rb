@@ -12,8 +12,10 @@ class BaconsController < ApplicationController
     end
 
     # Store the number of runs per action
-    versions = JSON.parse(params[:versions]) rescue {'nope' => 'nope'}
-    Resque.enqueue(BaconUpdaterWorker, launches, params[:error], params[:crash], versions)
+    parsed_versions = JSON.parse(params[:versions]) rescue {'nope' => 'nope'}
+    puts "versions param: #{params[:versions]}"
+    puts "parsed versions: #{parsed_versions}"
+    Resque.enqueue(BaconUpdaterWorker, launches, params[:error], params[:crash], parsed_versions)
 
     send_analytic_ingester_event(params[:fastfile_id], params[:error], params[:crash], launches, Time.now.to_i)
 
