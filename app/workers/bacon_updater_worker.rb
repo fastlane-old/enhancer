@@ -3,7 +3,7 @@ class BaconUpdaterWorker
 
   ActiveRecord::Base.logger = Logger.new(STDOUT)
 
-  def self.perform(launches, versions, error, crash)
+  def self.perform(launches, error, crash, versions={})
     puts "Starting bacons update for launches: #{launches}, versions: #{versions}, error: #{error}, crash: #{crash}"
 
     # Returns any connections in use by the current thread back to the pool, and also returns
@@ -33,6 +33,8 @@ class BaconUpdaterWorker
     end
 
     puts "Finished bacons update for launches: #{launches}, versions: #{versions}, error: #{error}, crash: #{crash}"
+  rescue => ex
+    puts "#{ex.message} - #{ex.backtrace.join("\n")}"
   end
 
   def self.update_bacon_for(action_name, launch_date)
