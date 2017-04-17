@@ -19,14 +19,16 @@ class BaconUpdaterWorker
     end
 
     if error.present?
-      update_bacon_for(error, now) do |bacon|
+      tool_version = versions[error] || 'unknown'
+      update_bacon_for(error, now, tool_version) do |bacon|
         bacon.increment(:number_errors)
         bacon.save
       end
     end
 
     if crash.present?
-      update_bacon_for(crash, now) do |bacon|
+      tool_version = versions[crash] || 'unknown'
+      update_bacon_for(crash, now, tool_version) do |bacon|
         bacon.increment(:number_crashes)
         bacon.save
       end
@@ -37,8 +39,8 @@ class BaconUpdaterWorker
     puts "#{ex.message} - #{ex.backtrace.join("\n")}"
   end
 
-  def self.update_bacon_for(action_name, launch_date)
-    Bacon.find_by(action_name: action_name, launch_date: launch_date, tool_version: tool_version(action_name)).try do |bacon|
+  def self.update_bacon_for(action_name, launch_date, tool_version)
+    Bacon.find_by(action_name: action_name, launch_date: launch_date, tool_version: tool_version).try do |bacon|
       yield bacon
     end
   end
