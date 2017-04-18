@@ -3,7 +3,7 @@ require 'faraday'
 class AnalyticIngesterWorker
   @queue = :analytic_ingester
 
-  def self.perform(fastfile_id, error, crash, launches, timestamp_seconds)
+  def self.perform(fastfile_id, error, crash, launches, timestamp_seconds, versions={})
     start = Time.now
 
     analytics = []
@@ -14,8 +14,11 @@ class AnalyticIngesterWorker
     end
 
     launches.each do |action, count|
+      action_version = versions[action] || 'unknown'
       action_completion_status = action == crash ? 'crash' : ( action == error ? 'error' : 'success' )
-      analytics << event_for_action_execution(action, count, action_completion_status, timestamp_seconds)
+
+      analytics << event_for_completion(action, action_completion_status, action_version, timestamp_seconds)
+      analytics << event_for_count(action, count, action_version, timestamp_seconds)
     end
 
     analytic_event_body = { analytics: analytics }.to_json
@@ -55,7 +58,7 @@ class AnalyticIngesterWorker
     }
   end
 
-  def self.event_for_action_execution(action, count, completion_status, timestamp_seconds)
+  def self.event_for_completion(action, completion_status, version, timestamp_seconds)
     {
       event_source: {
         oauth_app_name: 'fastlane-enhancer',
@@ -66,15 +69,41 @@ class AnalyticIngesterWorker
         detail: action
       },
       action: {
-        name: 'action_executed'
+        name: 'execution_completed'
       },
       primary_target: {
         name: 'completion_status',
         detail: completion_status
       },
       secondary_target: {
+        name: 'version',
+        detail: version
+      },
+      millis_since_epoch: timestamp_seconds * 1000,
+      version: 1
+    }
+  end
+
+  def self.event_for_count(action, count, version, timestamp_seconds)
+    {
+      event_source: {
+        oauth_app_name: 'fastlane-enhancer',
+        product: 'fastlane'
+      },
+      actor: {
+        name: 'action',
+        detail: action
+      },
+      action: {
+        name: 'execution_counted'
+      },
+      primary_target: {
         name: 'count',
         detail: count.to_s || "1"
+      },
+      secondary_target: {
+        name: 'version',
+        detail: version
       },
       millis_since_epoch: timestamp_seconds * 1000,
       version: 1

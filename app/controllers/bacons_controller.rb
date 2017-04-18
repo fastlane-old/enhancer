@@ -15,17 +15,17 @@ class BaconsController < ApplicationController
     parsed_versions = JSON.parse(params[:versions]) rescue {}
     Resque.enqueue(BaconUpdaterWorker, launches, params[:error], params[:crash], parsed_versions)
 
-    send_analytic_ingester_event(params[:fastfile_id], params[:error], params[:crash], launches, Time.now.to_i)
+    send_analytic_ingester_event(params[:fastfile_id], params[:error], params[:crash], launches, Time.now.to_i, parsed_versions)
 
     render json: { success: true }
   end
 
   # This helps us track the success/failure of Fastfiles which are generated
   # by an automated process, such as fastlane web onboarding
-  def send_analytic_ingester_event(fastfile_id, error, crash, launches, timestamp_seconds)
+  def send_analytic_ingester_event(fastfile_id, error, crash, launches, timestamp_seconds, parsed_versions)
     return unless ENV['ANALYTIC_INGESTER_URL'].present?
 
-    Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash, launches, timestamp_seconds)
+    Resque.enqueue(AnalyticIngesterWorker, fastfile_id, error, crash, launches, timestamp_seconds, parsed_versions)
   end
 
   def stats
