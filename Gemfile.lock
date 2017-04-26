@@ -83,7 +83,6 @@ GEM
     multipart-post (2.0.0)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
-    pg (0.20.0)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -184,7 +183,6 @@ DEPENDENCIES
   foreman
   jbuilder (~> 2.0)
   jquery-rails
-  pg
   rails (= 4.2.1)
   rails_12factor
   resque (~> 1.27.2)
