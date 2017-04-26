@@ -27,8 +27,6 @@ gem 'table_for_collection'
 
 gem 'faraday'
 
-gem 'pg'
-
 # background jobs using a Redis server as the queue
 gem 'resque', '~> 1.27.2'
 
