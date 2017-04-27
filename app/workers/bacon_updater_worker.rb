@@ -6,11 +6,15 @@ class BaconUpdaterWorker
   def self.perform(launches, error, crash, versions={})
     puts "Starting bacons update for launches: #{launches}, versions: #{versions}, error: #{error}, crash: #{crash}"
 
+    start = Time.now
     # Returns any connections in use by the current thread back to the pool, and also returns
     # connections to the pool cached by threads that are no longer alive.
     ActiveRecord::Base.clear_active_connections!
+    stop = Time.now
+    puts "Timing: ActiveRecord::Base.clear_active_connections! took #{(stop - start) * 1000}ms"
 
-    now = Time.now.to_date
+    start = Time.now
+    now = start.to_date
     launches.each do |action, count|
       tool_version = versions[action] || 'unknown'
       entry = Bacon.find_or_create_by(action_name: action, launch_date: now, tool_version: tool_version)
@@ -33,6 +37,8 @@ class BaconUpdaterWorker
         bacon.save
       end
     end
+    stop = Time.now
+    puts "Timing: Bacon DB writes took #{(stop - start) * 1000}ms"
 
     puts "Finished bacons update for launches: #{launches}, versions: #{versions}, error: #{error}, crash: #{crash}"
   rescue => ex
