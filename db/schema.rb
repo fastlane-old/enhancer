@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509194220) do
+ActiveRecord::Schema.define(version: 20170427183242) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "bacons", force: :cascade do |t|
     t.string   "action_name",    limit: 255,                     null: false
@@ -23,5 +26,7 @@ ActiveRecord::Schema.define(version: 20160509194220) do
     t.string   "tool_version",   limit: 50,  default: "unknown", null: false
     t.integer  "number_crashes",             default: 0,         null: false
   end
+
+  add_index "bacons", ["action_name", "launch_date", "tool_version"], name: "index_bacons_on_action_name_and_launch_date_and_tool_version", using: :btree
 
 end
