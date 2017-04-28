@@ -4,6 +4,8 @@ class AnalyticIngesterWorker
   @queue = :analytic_ingester
 
   def self.perform(fastfile_id, error, crash, launches, timestamp_seconds, versions={})
+    @logger = create_logger
+
     start = Time.now
 
     analytics = []
@@ -23,7 +25,7 @@ class AnalyticIngesterWorker
 
     analytic_event_body = { analytics: analytics }.to_json
 
-    puts "Sending analytic event: #{analytic_event_body}"
+    @logger.info "Sending analytic event: #{analytic_event_body}"
 
     response = Faraday.new(:url => ENV["ANALYTIC_INGESTER_URL"]).post do |req|
       req.headers['Content-Type'] = 'application/json'
@@ -32,8 +34,8 @@ class AnalyticIngesterWorker
 
     stop = Time.now
 
-    puts "Analytic ingester response was: #{response.status}"
-    puts "Sending analytic ingester event took #{(stop - start) * 1000}ms"
+    @logger.info "Analytic ingester response was: #{response.status}"
+    @logger.info "Sending analytic ingester event took #{(stop - start) * 1000}ms"
   end
 
   def self.event_for_web_onboarding(fastfile_id, completion_status, timestamp_seconds)
@@ -108,5 +110,13 @@ class AnalyticIngesterWorker
       millis_since_epoch: timestamp_seconds * 1000,
       version: 1
     }
+  end
+
+  def self.create_logger
+    if ENV['USE_LOGSTASH']
+      LogStashLogger.new(type: :file, path: "#{Rails.root}/log/#{@queue}_worker_#{Rails.env}.log", sync: true)
+    else
+      Logger.new(STDOUT)
+    end
   end
 end

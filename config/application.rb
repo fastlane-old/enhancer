@@ -33,5 +33,12 @@ module Refresher
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
+
+    if ENV['USE_LOGSTASH']
+      config.logger = LogStashLogger.new(type: :file, path: "#{Rails.root}/log/#{Rails.env}.log", sync: true)
+      config.logger.level = Logger::INFO
+      config.lograge.enabled = true
+      config.lograge.formatter = Lograge::Formatters::Logstash.new
+    end
   end
 end

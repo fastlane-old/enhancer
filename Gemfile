@@ -36,6 +36,10 @@ gem 'unicorn'
 
 gem "figaro"
 
+gem 'lograge'
+gem 'logstash-event'
+gem 'logstash-logger'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
