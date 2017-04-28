@@ -31,3 +31,6 @@ config/initializers/secret_token.rb
 bower.json
 
 latest.dump
+
+# Ignore application configuration
+/config/application.yml
