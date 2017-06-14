@@ -1,3 +1,10 @@
+### This repository is deprecated
+
+Please check out the [main readme](https://github.com/fastlane/fastlane#metrics) for most up to date information about what kind of data fastlane stores.
+
+----
+
+
 <h3 align="center">
   <a href="https://github.com/fastlane/fastlane">
     <img src="app/assets/images/fastlane.png" width="150" />
